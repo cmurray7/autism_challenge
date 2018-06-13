@@ -13,7 +13,7 @@ def evaluation(X, y):
 	cv = get_cv(X, y)
 	results = cross_validate(pipe, X, y, scoring=['roc_auc', 'accuracy'], cv=cv,
 	                         verbose=1, return_train_score=True,
-	                         n_jobs=2)
+	                         n_jobs=1)
 
 	return results
 

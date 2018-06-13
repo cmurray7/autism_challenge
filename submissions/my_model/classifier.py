@@ -8,11 +8,12 @@ from sklearn.pipeline import make_pipeline
 class Classifier(BaseEstimator):
 	def __init__(self):
 		self.clf = make_pipeline(StandardScaler(),
-		                         MLPClassifier(hidden_layer_sizes=(900, 450, 225, 450, 200),
-		                                       alpha=0.0001,
-		                                       max_iter=1000,
+		                         MLPClassifier(hidden_layer_sizes=(450, 200),
+		                                       solver='adam',
+		                                       tol=0.01,
 		                                       early_stopping=True,
-		                                       validation_fraction=0.15))
+		                                       validation_fraction=0.15,
+                                                       verbose=True))
 
 	def fit(self, X, y):
 		self.clf.fit(X, y)
