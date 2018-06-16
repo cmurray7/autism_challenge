@@ -2,19 +2,11 @@ import numpy as np
 import pandas as pd
 
 from sklearn.base import BaseEstimator, TransformerMixin
-<<<<<<< HEAD
-from sklearn.pipeline import make_pipeline, Pipeline
-from sklearn.preprocessing import FunctionTransformer
-
-from nilearn.connectome import ConnectivityMeasure
-from networkx import to_networkx_graph, betweenness_centrality
-=======
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import FunctionTransformer
 
 from nilearn.connectome import ConnectivityMeasure
 from networkx import betweenness_centrality, to_networkx_graph
->>>>>>> c7419f7a4d62eb8667d72942b105948692e4a602
 
 def _load_fmri(fmri_filenames):
 	"""Load time-series extracted from the fMRI using a specific atlas."""
