@@ -2,10 +2,11 @@ import numpy as np
 import pandas as pd
 
 from sklearn.base import BaseEstimator, TransformerMixin
-from sklearn.pipeline import make_pipeline
+from sklearn.pipeline import make_pipeline, Pipeline
 from sklearn.preprocessing import FunctionTransformer
 
 from nilearn.connectome import ConnectivityMeasure
+from networkx import to_networkx_graph, betweenness_centrality
 
 def _load_fmri(fmri_filenames):
 	"""Load time-series extracted from the fMRI using a specific atlas."""
@@ -13,11 +14,22 @@ def _load_fmri(fmri_filenames):
 	                             header=None).values
 	                 for subject_filename in fmri_filenames])
 
+def _get_centrality(connectivity_matrices):
+        return np.array([betweenness_centrality(to_networkx_graph(cm)) for cm in connectivity_matrices])
+
 class FeatureExtractor(BaseEstimator, TransformerMixin):
 	def __init__(self):
-		self.transformer_fmri = make_pipeline(
-			FunctionTransformer(func=_load_fmri, validate=False),
-			ConnectivityMeasure(kind='tangent', vectorize=True))
+                ft = FunctionTransformer(func=_load_fmri, validate=False)
+                cm = ConnectivityMeasure(kind='tangent', vectorize=False)
+                gc = FunctionTransformer(func=_get_centrality, validate=False)
+
+                self.transformer_fmri = Pipeline([('load_fmri', ft), 
+                                                    ('connectivity', cm),
+                                                    ('centrality', gc)])
+                
+#		self.transformer_fmri = make_pipeline(
+#			FunctionTransformer(func=_load_fmri, validate=False),
+#			ConnectivityMeasure(kind='tangent', vectorize=True))
 
 	def fit(self, X_df, y):
 		fmri_filenames = X_df['fmri_msdl']
